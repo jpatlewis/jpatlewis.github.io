@@ -2,4 +2,8 @@
 
 ###
 Hosted R pages.
-Short term solution.
+
+Materials Purchased:
+https://jpatlewis.github.io/materials_purchased
+
+More to come!
