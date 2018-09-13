@@ -18,6 +18,9 @@
             <div class="col-sm-6 col-md-6">
                     <div id="container3"></div>
             </div>
+            <div class="col-sm-6 col-md-6">
+                <div id="container4"></div>
+            </div>
     </div>
 </body>
 <script>
@@ -108,7 +111,7 @@ Highcharts.chart('container3', {
         type: 'pie'
     },
     title: {
-        text: 'No materials purchased -- all time'
+        text: 'No materials purchased by service -- all time'
     },
     tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -146,12 +149,60 @@ Highcharts.chart('container3', {
     }]
 });
 }
+function initMonthServices(itemData){
+Highcharts.chart('container4', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: 'No materials purchased by service -- ' + itemData["current_month"]["MM-YYYY"]
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: false
+            },
+            showInLegend: true
+        }
+    },
+    series: [{
+        name: 'Current month by service',
+        colorByPoint: true,
+        data: [{
+            name: 'Electrical',
+            y: itemData["current_month"]["no_mats_elec"],
+            drilldown: "mats"
+        }, {
+            name: 'HVAC',
+            y: itemData["current_month"]["no_mats_plumbing"],
+            drilldown: "no_mats"
+        }, {
+            name: 'Plumbing',
+            y: itemData["current_month"]["no_mats_hvac"],
+            drilldown: "no_mats"
+        }, {
+            name: 'Handyman',
+            y: itemData["current_month"]["no_mats_handyman"],
+            drilldown: "no_mats"
+        }],
+    }]
+});
+}
 $.ajax(url, {
         type: 'GET',
         success: function(data){
             initAllTime(data);
             initCurrentMonth(data);
             initAllTimeServices(data);
+            initMonthServices(data);
         }
       });
 </script>
