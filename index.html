@@ -1,0 +1,113 @@
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+<script src="config.js"></script>
+<title>Repeat vs one time customers</title>
+</head>
+<body>
+<h1 align="center">Repeat vs one time customers</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-md-6">
+                <div id="container1"></div>
+            </div>
+            <div class="col-sm-6 col-md-6">
+                <div id="container2"></div>
+            </div>
+    </div>
+</body>
+<script>
+function initConsumerCount(itemData){
+Highcharts.chart('container1', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: 'Job count: Repeat vs one time customers'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: false
+            },
+            showInLegend: true
+        }
+    },
+    series: [{
+        name: 'count',
+        colorByPoint: true,
+        data: [{
+            name: 'Repeat customers: ' + numberWithCommas(itemData["repeat_consumer_count"]),
+            y: itemData["repeat_consumer_count"],
+            drilldown: "repeat"
+        }, {
+            name: 'One time customers: ' + numberWithCommas(itemData["one_time_consumer_count"]),
+            y: itemData["one_time_consumer_count"],
+            drilldown: "one time"
+        }],
+    }]
+});
+}
+function initConsumerRev(itemData){
+Highcharts.chart('container2', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: 'Job Revenue: Repeat vs one time customers'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: false
+            },
+            showInLegend: true
+        }
+    },
+    series: [{
+        name: 'rev',
+        colorByPoint: true,
+        data: [{
+            name: 'Repeat customers: ' + numberWithCommas(itemData["repeat_consumer_rev"]),
+            y: itemData["repeat_consumer_rev"],
+            drilldown: "mats"
+        }, {
+            name: 'One time customers: ' + numberWithCommas(itemData["one_time_consumer_rev"]),
+            y: itemData["one_time_consumer_rev"],
+            drilldown: "no_mats"
+        }],
+    }]
+});
+}
+const numberWithCommas = (x) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+$.ajax(url, {
+        type: 'GET',
+        success: function(data){
+            initConsumerCount(data);
+            initConsumerRev(data);
+        }
+      });
+</script>
+</html>
